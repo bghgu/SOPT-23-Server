@@ -1,6 +1,6 @@
 # SOPT-23-Server
 
-![SOPT_23_COLOR_LOGO]()
+![SOPT_23_COLOR_LOGO](https://github.com/bghgu/SOPT-23-Server/blob/master/SOPT_23_COLOR_LOGO.png)
 
 | 차수 | 내용                                  |
 | ---- | ------------------------------------- |
