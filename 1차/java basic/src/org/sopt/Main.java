@@ -53,5 +53,27 @@ public class Main {
                 .setFcmToken(null)
                 .setDepartment(null)
                 .build();
+
+        final Student student = new Student("배다슬", "소프트웨어공학과");
+        //부모 클래스의 메소드
+        System.out.println(student.getName());
+        //자식 클래스의 메소드
+        System.out.println(student.getDeaprtment());
+
+        DefaultRes<Student> defaultRes1 = new DefaultRes<>(student);
+        DefaultRes<User> defaultRes2 = new DefaultRes<>(user1);
+        DefaultRes<User2> defaultRes3 = new DefaultRes<>(cowalwerPM);
+
+        DefaultRes<User> defaultRes = new DefaultRes<>(user1);
+
+
+        try {
+
+        }catch (Exception e) {
+
+        }
+
     }
+
+
 }
