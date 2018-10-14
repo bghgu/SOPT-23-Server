@@ -25,27 +25,31 @@ public class FirstController {
     public String hello2() {
         return "hello world!!";
     }
+
     @GetMapping("/get1")
     public String get1() {
         return "1";
     }
+
     @GetMapping("get1/배다슬")
     public String get2() {
         return "배다슬";
     }
 
     @GetMapping("/name/{name}")
-    public String getName(@PathVariable final String name) {
+    public String asdasd(@PathVariable(value = "name", required = true) final String name) {
         return name;
     }
 
     @GetMapping("/part")
-    public String getPart(@RequestParam final String part) {
+    public String getPart(@RequestParam(value = "part", defaultValue = "솝트") final String part) {
         return part;
     }
 
     @GetMapping("/info")
-    public String getPart2(@RequestParam final String name, @RequestParam final String type) {
+    public String getPart2(
+            @RequestParam(value = "name", defaultValue = "류지훈") final String name,
+            @RequestParam(value = "type", defaultValue = "회장") final String type) {
         System.out.println(name + "이고 " + type + "입니다.");
         return name + "이고 " + type + "입니다.";
     }
@@ -53,7 +57,7 @@ public class FirstController {
     @GetMapping("/num")
     public int number(@RequestParam final int[] num) {
         int sum = 0;
-        for(int i : num) {
+        for (int i : num) {
             sum += i;
         }
         return sum;
