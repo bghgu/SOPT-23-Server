@@ -37,7 +37,7 @@ public class FirstController {
     }
 
     @GetMapping("/name/{name}")
-    public String asdasd(@PathVariable(value = "name", required = true) final String name) {
+    public String asdasd(@PathVariable(value = "name", required = false) final String name) {
         return name;
     }
 
