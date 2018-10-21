@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService {
         log.info("findAllUser");
         if (userList.isEmpty())
             return DefaultRes.<List<User>>builder()
-                    .statusCode(HttpStatus.OK.value())
+                    .statusCode(HttpStatus.NOT_FOUND.value())
                     .responseMessage(ResponseMessage.NOT_FOUND_USER)
                     .build();
         return DefaultRes.<List<User>>builder()

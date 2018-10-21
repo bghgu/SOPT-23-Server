@@ -1,14 +1,11 @@
 package org.sopt.seminar3.api;
 
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.sopt.seminar3.model.DefaultRes;
 import org.sopt.seminar3.model.User;
 import org.sopt.seminar3.service.LoginService;
 import org.sopt.seminar3.service.UserService;
 import org.sopt.seminar3.utils.ResponseMessage;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +33,12 @@ public class UserController {
     //@Autowired
     private final LoginService loginService;
 
+    /**
+     * 생성자가 1개일 경우 @Autowired가 생략 가능하다.
+     * @param userService
+     * @param userService2
+     * @param loginService
+     */
     public UserController(@Qualifier("UserServiceImpl") final UserService userService,
                           @Qualifier("UserServiceImpl2") final UserService userService2,
                           final LoginService loginService) {
