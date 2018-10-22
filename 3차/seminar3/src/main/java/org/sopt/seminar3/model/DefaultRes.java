@@ -22,7 +22,7 @@ public class DefaultRes<T> {
     //Response Message
     private String responseMessage;
 
-    //Response Data
+    //Response TestData
     private T responseData;
 
     public DefaultRes(final HttpStatus statusCode, final String responseMessage) {
