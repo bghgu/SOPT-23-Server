@@ -45,5 +45,11 @@ public class Temp {
                 .name("배다슬")
                 .email("bghgu@naver.com")
                 .build();
+
+        //immutable 객체
+        TestValue testValue = new TestValue(0, "배다슬", "bghgu@naver.com");
+        //@Wither
+        //값을 변경한 새로운 객체를 만들어 준다.
+        TestValue testValue1 = testValue.withUserIdx(1);
     }
 }

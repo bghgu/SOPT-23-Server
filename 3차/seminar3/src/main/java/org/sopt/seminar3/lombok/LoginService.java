@@ -1,4 +1,4 @@
-package org.sopt.seminar3.service;
+package org.sopt.seminar3.lombok;
 
 import org.sopt.seminar3.model.DefaultRes;
 

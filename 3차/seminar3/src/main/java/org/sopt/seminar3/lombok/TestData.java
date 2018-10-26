@@ -13,7 +13,7 @@ import lombok.Data;
  * @Getter
  * @ToString
  * @EqualsAndHashCode
- * @AllArgs & @NoArgs & @RequiredArgs Constructor
+ * @NoArgsConstructor
  */
 
 @Data
