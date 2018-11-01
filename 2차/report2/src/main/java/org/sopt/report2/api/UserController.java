@@ -40,7 +40,8 @@ public class UserController {
                 if (u.getName().equals(name.get())) return u.toString();
             }
             return "없습니다";
-        } else if (part.isPresent()) {
+        }
+        if (part.isPresent()) {
             for (User u : userList) {
                 if (u.getPart().equals(part.get())) return u.toString();
             }
