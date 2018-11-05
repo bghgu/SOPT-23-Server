@@ -26,6 +26,16 @@ public class UserController {
         return new Date().toString();
     }
 
+    @GetMapping("/1")
+    public List<User> getUserList(){
+        userList.add(new User());
+        if(userList.isEmpty()){
+            return null;
+        }else {
+            return userList;
+        }
+    }
+
     /**
      * 모든 회원 리스트 조회
      *
