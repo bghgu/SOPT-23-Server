@@ -7,6 +7,7 @@ import org.sopt.seminar4.model.DefaultRes;
 import org.sopt.seminar4.utils.ResponseMessage;
 import org.sopt.seminar4.utils.StatusCode;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.util.List;
@@ -57,6 +58,7 @@ public class UserService {
      * @param user 회원 데이터
      * @return
      */
+    @Transactional
     public DefaultRes save(final User user) {
         try {
             userMapper.save(user);
@@ -75,13 +77,14 @@ public class UserService {
      * @param user 수정할 회원 데이터
      * @return
      */
+    @Transactional
     public DefaultRes update(final int userIdx, final User user) {
         User temp = userMapper.findByUserIdx(userIdx);
         if (temp != null) {
             try {
                 if (user.getName() != null) temp.setName(user.getName());
                 if (user.getPart() != null) temp.setPart(user.getPart());
-                userMapper.update(temp);
+                userMapper.update(userIdx, temp);
                 return DefaultRes.res(StatusCode.NO_CONTENT, ResponseMessage.UPDATE_USER);
             } catch (Exception e) {
                 //Rollback
@@ -98,6 +101,7 @@ public class UserService {
      * @param userIdx 회원 고유 번호
      * @return
      */
+    @Transactional
     public DefaultRes deleteByUserIdx(final int userIdx) {
         final User user = userMapper.findByUserIdx(userIdx);
         if (user != null) {
