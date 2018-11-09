@@ -30,6 +30,7 @@ public class UserController {
     @GetMapping("")
     public ResponseEntity getUser(@RequestParam("name") final Optional<String> name) {
         try {
+            //name이 null일 경우 false, null이 아닐 경우 true
             if(name.isPresent()) return new ResponseEntity<>(userService.findByName(name.get()), HttpStatus.OK);
             return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
         }catch (Exception e) {
