@@ -42,4 +42,8 @@ public interface UserMapper {
     //회원 삭제
     @Delete("DELETE FROM user where userIdx = #{userIdx}")
     void deleteByUserIdx(@Param("userIdx") final int userIdx);
+
+    //이름과 비밀번호로 조회
+    @Select("SELECT * FROM user WHERE name = #{name} AND password = #{password}")
+    User findByNameAndPassword(@Param("name") final String name, @Param("password") final String password);
 }

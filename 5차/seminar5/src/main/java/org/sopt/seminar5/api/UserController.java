@@ -3,7 +3,9 @@ package org.sopt.seminar5.api;
 import lombok.extern.slf4j.Slf4j;
 import org.sopt.seminar5.dto.User;
 import org.sopt.seminar5.model.SignUpReq;
+import org.sopt.seminar5.service.JwtService;
 import org.sopt.seminar5.service.UserService;
+import org.sopt.seminar5.utils.auth.Auth;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,13 +26,20 @@ public class UserController {
 
     private final UserService userService;
 
-    public UserController(final UserService userService) {
+    private final JwtService jwtService;
+
+    public UserController(final UserService userService, final JwtService jwtService) {
         this.userService = userService;
+        this.jwtService = jwtService;
     }
 
+    @Auth
     @GetMapping("")
-    public ResponseEntity getUser(@RequestParam("name") final Optional<String> name) {
+    public ResponseEntity getUser(
+            @RequestHeader("Authorization") final String header,
+            @RequestParam("name") final Optional<String> name) {
         try {
+            log.info("ID : " + jwtService.decode(header));
             //name이 null일 경우 false, null이 아닐 경우 true
             if (name.isPresent()) return new ResponseEntity<>(userService.findByName(name.get()), HttpStatus.OK);
             return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
@@ -47,13 +56,11 @@ public class UserController {
      * @param profile   프로필 사진 객체
      * @return ResponseEntity
      */
+    //@RequestPart
+    //value = "profile" 파일의 키 값은 profile
+    //required = false 파일을 필수로 받지 않겠다.
     @PostMapping("")
-    public ResponseEntity signup(
-            SignUpReq signUpReq,
-            //@RequestPart
-            //value = "profile" 파일의 키 값은 profile
-            //required = false 파일을 필수로 받지 않겠다.
-            @RequestPart(value = "profile", required = false) final MultipartFile profile) {
+    public ResponseEntity signup(SignUpReq signUpReq, @RequestPart(value = "profile", required = false) final MultipartFile profile) {
         try {
             //파일을 signUpReq에 저장
             if (profile != null) signUpReq.setProfile(profile);
