@@ -1,11 +1,12 @@
-package org.sopt.seminar4.service;
+package org.sopt.seminar5.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.sopt.seminar4.dto.User;
-import org.sopt.seminar4.mapper.UserMapper;
-import org.sopt.seminar4.model.DefaultRes;
-import org.sopt.seminar4.utils.ResponseMessage;
-import org.sopt.seminar4.utils.StatusCode;
+import org.sopt.seminar5.dto.User;
+import org.sopt.seminar5.mapper.UserMapper;
+import org.sopt.seminar5.model.DefaultRes;
+import org.sopt.seminar5.model.SignUpReq;
+import org.sopt.seminar5.utils.ResponseMessage;
+import org.sopt.seminar5.utils.StatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
@@ -13,7 +14,7 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import java.util.List;
 
 /**
- * Created by ds on 2018-11-05.
+ * Created by ds on 2018-11-12.
  */
 
 @Slf4j
@@ -22,13 +23,18 @@ public class UserService {
 
     private final UserMapper userMapper;
 
+    private final FileUploadService fileUploadService;
+
     /**
      * UserMapper 생성자 의존성 주입
+     * FileUploadService 생성자 의존성 주입
      *
-     * @param userMapper
+     * @param userMapper        userMapper 서비스 객체
+     * @param fileUploadService fileUpload 서비스 객체
      */
-    public UserService(final UserMapper userMapper) {
+    public UserService(final UserMapper userMapper, final FileUploadService fileUploadService) {
         this.userMapper = userMapper;
+        this.fileUploadService = fileUploadService;
     }
 
     /**
@@ -59,21 +65,25 @@ public class UserService {
     /**
      * 회원 가입
      *
-     * @param user 회원 데이터
+     * @param signUpReq 회원 데이터
      * @return DefaultRes
      */
     @Transactional
-    public DefaultRes save(final User user) {
+    public DefaultRes save(SignUpReq signUpReq) {
         try {
-        userMapper.save(user);
-        return DefaultRes.res(StatusCode.CREATED, ResponseMessage.CREATED_USER);
-    } catch (Exception e) {
-        //Rollback
-        TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-        log.error(e.getMessage());
-        return DefaultRes.res(StatusCode.DB_ERROR, ResponseMessage.DB_ERROR);
+            //파일이 있다면 파일을 S3에 저장 후 경로를 저장
+            if (signUpReq.getProfile() != null)
+                signUpReq.setProfileUrl(fileUploadService.upload(signUpReq.getProfile()));
+
+            userMapper.save(signUpReq);
+            return DefaultRes.res(StatusCode.CREATED, ResponseMessage.CREATED_USER);
+        } catch (Exception e) {
+            //Rollback
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            log.error(e.getMessage());
+            return DefaultRes.res(StatusCode.DB_ERROR, ResponseMessage.DB_ERROR);
+        }
     }
-}
 
     /**
      * 회원 정보 수정
