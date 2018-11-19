@@ -6,11 +6,10 @@ import org.sopt.seminar5.model.LoginReq;
 import org.sopt.seminar5.service.AuthService;
 import org.sopt.seminar5.utils.ResponseMessage;
 import org.sopt.seminar5.utils.StatusCode;
+import org.sopt.seminar5.utils.auth.Auth;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Created by ds on 2018-11-13.

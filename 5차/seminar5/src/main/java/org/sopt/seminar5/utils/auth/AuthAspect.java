@@ -8,9 +8,6 @@ import org.sopt.seminar5.dto.User;
 import org.sopt.seminar5.mapper.UserMapper;
 import org.sopt.seminar5.model.DefaultRes;
 import org.sopt.seminar5.service.JwtService;
-import org.sopt.seminar5.service.UserService;
-import org.sopt.seminar5.utils.ResponseMessage;
-import org.sopt.seminar5.utils.StatusCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -59,28 +56,18 @@ public class AuthAspect {
     @Around("@annotation(org.sopt.seminar5.utils.auth.Auth)")
     public Object around(final ProceedingJoinPoint pjp) throws Throwable {
         final String jwt = httpServletRequest.getHeader(AUTHORIZATION);
-
         //토큰 존재 여부 확인
-        if (jwt == null) {
-            return RES_RESPONSE_ENTITY;
-        }
-
+        if (jwt == null) return RES_RESPONSE_ENTITY;
         //토큰 해독
         final JwtService.Token token = jwtService.decode(jwt);
-
         //토큰 검사
         if (token == null) {
             return RES_RESPONSE_ENTITY;
         } else {
             final User user = userMapper.findByUserIdx(token.getUser_idx());
-
             //유효 사용자 검사
-            if (user == null) {
-                return RES_RESPONSE_ENTITY;
-            }
-
+            if (user == null) return RES_RESPONSE_ENTITY;
             return pjp.proceed(pjp.getArgs());
         }
-
     }
 }

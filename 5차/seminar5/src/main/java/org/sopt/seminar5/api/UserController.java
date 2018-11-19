@@ -33,13 +33,9 @@ public class UserController {
         this.jwtService = jwtService;
     }
 
-    @Auth
     @GetMapping("")
-    public ResponseEntity getUser(
-            @RequestHeader("Authorization") final String header,
-            @RequestParam("name") final Optional<String> name) {
+    public ResponseEntity getUser(@RequestParam("name") final Optional<String> name) {
         try {
-            log.info("ID : " + jwtService.decode(header));
             //name이 null일 경우 false, null이 아닐 경우 true
             if (name.isPresent()) return new ResponseEntity<>(userService.findByName(name.get()), HttpStatus.OK);
             return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
@@ -48,6 +44,19 @@ public class UserController {
             return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @PostMapping("test1")
+    public String test1(final SignUpReq signUpReq) {
+        //application/x-www-form-urlecoded 형식
+        return signUpReq.toString();
+    }
+
+    @PostMapping("test2")
+    public String test2(@RequestBody final SignUpReq signUpReq) {
+        //application/json 객체 형식
+        return signUpReq.toString();
+    }
+
 
     /**
      * 회원 가입
@@ -60,8 +69,12 @@ public class UserController {
     //value = "profile" 파일의 키 값은 profile
     //required = false 파일을 필수로 받지 않겠다.
     @PostMapping("")
-    public ResponseEntity signup(SignUpReq signUpReq, @RequestPart(value = "profile", required = false) final MultipartFile profile) {
+    public ResponseEntity signup(
+            SignUpReq signUpReq,
+            @RequestPart(value = "profile", required = false) final MultipartFile profile
+    ) {
         try {
+            System.out.println("asdasdas");
             //파일을 signUpReq에 저장
             if (profile != null) signUpReq.setProfile(profile);
             return new ResponseEntity<>(userService.save(signUpReq), HttpStatus.OK);

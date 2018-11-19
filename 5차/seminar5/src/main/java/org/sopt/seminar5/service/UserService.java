@@ -23,18 +23,17 @@ public class UserService {
 
     private final UserMapper userMapper;
 
-    private final FileUploadService fileUploadService;
+    private final S3FileUploadService s3FileUploadService;
 
     /**
-     * UserMapper 생성자 의존성 주입
-     * FileUploadService 생성자 의존성 주입
+     * 생성자 의존성 주입
      *
-     * @param userMapper        userMapper 서비스 객체
-     * @param fileUploadService fileUpload 서비스 객체
+     * @param userMapper
+     * @param s3FileUploadService
      */
-    public UserService(final UserMapper userMapper, final FileUploadService fileUploadService) {
+    public UserService(final UserMapper userMapper, final S3FileUploadService s3FileUploadService) {
         this.userMapper = userMapper;
-        this.fileUploadService = fileUploadService;
+        this.s3FileUploadService = s3FileUploadService;
     }
 
     /**
@@ -73,7 +72,7 @@ public class UserService {
         try {
             //파일이 있다면 파일을 S3에 저장 후 경로를 저장
             if (signUpReq.getProfile() != null)
-                signUpReq.setProfileUrl(fileUploadService.upload(signUpReq.getProfile()));
+                signUpReq.setProfileUrl(s3FileUploadService.upload(signUpReq.getProfile()));
 
             userMapper.save(signUpReq);
             return DefaultRes.res(StatusCode.CREATED, ResponseMessage.CREATED_USER);
