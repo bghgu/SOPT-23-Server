@@ -74,7 +74,6 @@ public class UserController {
             @RequestPart(value = "profile", required = false) final MultipartFile profile
     ) {
         try {
-            System.out.println("asdasdas");
             //파일을 signUpReq에 저장
             if (profile != null) signUpReq.setProfile(profile);
             return new ResponseEntity<>(userService.save(signUpReq), HttpStatus.OK);
@@ -84,18 +83,35 @@ public class UserController {
         }
     }
 
+    /**
+     * 회원 정보 수정 API
+     * 인증 필요
+     * @param userIdx   회원 고유 번호
+     * @param signUpReq 수정할 회원 정보 객체
+     * @return ResponseEntity
+     */
+    @Auth
     @PutMapping("/{userIdx}")
     public ResponseEntity signUp(
             @PathVariable(value = "userIdx") final int userIdx,
-            @RequestBody final User user) {
+            SignUpReq signUpReq,
+            @RequestPart(value = "profile", required = false) final MultipartFile profile) {
         try {
-            return new ResponseEntity<>(userService.update(userIdx, user), HttpStatus.OK);
+            if (profile != null) signUpReq.setProfile(profile);
+            return new ResponseEntity<>(userService.update(userIdx, signUpReq), HttpStatus.OK);
         } catch (Exception e) {
             log.error(e.getMessage());
             return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
+    /**
+     * 회원 정보 삭제 API
+     * 인증 필요
+     * @param userIdx 회원 고유 번호
+     * @return ResponseEntity
+     */
+    @Auth
     @DeleteMapping("/{userIdx}")
     public ResponseEntity deleteUser(@PathVariable(value = "userIdx") final int userIdx) {
         try {
