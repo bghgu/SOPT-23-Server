@@ -1,4 +1,4 @@
-package org.sopt.seminar5.service;
+package org.sopt.seminar7.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator;
@@ -11,12 +11,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-
 import static com.auth0.jwt.JWT.require;
 
 /**
- * Created by ds on 2018-11-13.
+ * Created by ds on 2018-11-28.
  */
 
 @Slf4j

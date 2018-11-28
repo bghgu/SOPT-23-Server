@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Created by ds on 2018-10-12.
@@ -24,16 +23,6 @@ public class UserController {
     @GetMapping
     public String getNowTime() {
         return new Date().toString();
-    }
-
-    @GetMapping("/1")
-    public List<User> getUserList(){
-        userList.add(new User());
-        if(userList.isEmpty()){
-            return null;
-        }else {
-            return userList;
-        }
     }
 
     /**
