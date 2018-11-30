@@ -10,7 +10,6 @@ import org.springframework.web.multipart.MultipartFile;
  */
 
 @Setter
-@ToString
 @NoArgsConstructor
 public class SignUpReq {
     private String email;
@@ -18,4 +17,9 @@ public class SignUpReq {
     private String name;
     private int part;
     private MultipartFile profile;
+
+    public boolean isLogin() {
+        if(email != null && password != null) return true;
+        return false;
+    }
 }

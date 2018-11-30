@@ -1,5 +1,6 @@
 package org.sopt.seminar7.dto;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
@@ -10,6 +11,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class User {
+    @Getter
     private int userIdx;
     private String name;
     private String part;
