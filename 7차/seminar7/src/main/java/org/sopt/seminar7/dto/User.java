@@ -1,19 +1,18 @@
 package org.sopt.seminar7.dto;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+        import lombok.Data;
+        import lombok.NoArgsConstructor;
 
 /**
  * Created by ds on 2018-11-28.
  */
 
-@Setter
+@Data
 @NoArgsConstructor
 public class User {
-    @Getter
     private int userIdx;
     private String name;
     private String part;
     private String profileUrl;
+    private boolean auth;
 }

@@ -8,7 +8,7 @@ import org.sopt.seminar7.utils.StatusCode;
  * Created by ds on 2018-11-28.
  */
 
-@Setter
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

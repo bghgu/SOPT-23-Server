@@ -11,6 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import static com.auth0.jwt.JWT.require;
 
 /**
@@ -41,12 +44,22 @@ public class JwtService {
             b.withIssuer(ISSUER);
             //토큰 payload 작성, key - value 형식, 객체도 가능
             b.withClaim("user_idx", user_idx);
+            //만료 날자 지정, 1달
+            b.withExpiresAt(expiresAt());
             //토큰 해싱해서 반환
             return b.sign(Algorithm.HMAC256(SECRET));
         } catch (JWTCreationException JwtCreationException) {
             log.info(JwtCreationException.getMessage());
         }
         return null;
+    }
+
+    private Date expiresAt() {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date());
+        //한달 24*31
+        cal.add(Calendar.HOUR, 744);
+        return cal.getTime();
     }
 
     /**

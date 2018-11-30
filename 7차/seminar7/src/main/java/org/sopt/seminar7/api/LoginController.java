@@ -1,5 +1,6 @@
 package org.sopt.seminar7.api;
 
+import lombok.extern.slf4j.Slf4j;
 import org.sopt.seminar7.model.DefaultRes;
 import org.sopt.seminar7.model.SignUpReq;
 import org.sopt.seminar7.service.LoginService;
@@ -16,6 +17,7 @@ import static org.sopt.seminar7.model.DefaultRes.FAIL_DEFAULT_RES;
  * Created by ds on 2018-11-28.
  */
 
+@Slf4j
 @RestController
 public class LoginController {
 
@@ -31,6 +33,7 @@ public class LoginController {
             if(signUpReq.isLogin()) return new ResponseEntity<>(loginService.login(signUpReq), HttpStatus.OK);
             return new ResponseEntity<>(DefaultRes.res(StatusCode.BAD_REQUEST, ResponseMessage.LOGIN_REQUIRED), HttpStatus.OK);
         }catch (Exception e) {
+            log.error(e.getMessage());
             return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
