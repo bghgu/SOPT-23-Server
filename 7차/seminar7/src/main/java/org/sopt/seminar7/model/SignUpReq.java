@@ -2,6 +2,7 @@ package org.sopt.seminar7.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.sopt.seminar7.dto.User;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -12,12 +13,11 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor
 public class SignUpReq {
 
+    private String name;
     private String email;
     private String password;
-    private String name;
-    private int part = 0;
-    private MultipartFile profile;
     private String profileUrl;
+    private MultipartFile profile;
 
     public boolean isLogin() {
         if(email != null && password != null) return true;
@@ -25,7 +25,8 @@ public class SignUpReq {
     }
 
     public boolean checkProperties() {
-        if(email != null && password != null && part != 0 && name != null) return true;
-        return false;
+        return (email != null && password != null && name != null);
+//        if(email != null && password != null && part != 0 && name != null) return true;
+//        return false;
     }
 }

@@ -22,26 +22,36 @@ public class UserService {
     private final UserMapper userMapper;
     private final S3FileUploadService s3FileUploadService;
 
-    public UserService(final UserService userService, final S3FileUploadService s3FileUploadService) {
-        this.userMapper = userService;
+    public UserService(final UserMapper userMapper, final S3FileUploadService s3FileUploadService) {
+        this.userMapper = userMapper;
         this.s3FileUploadService = s3FileUploadService;
     }
 
-
+    /**
+     * 회원 조회
+     *
+     * @param userIdx 회원 고유 번호
+     * @return DefaultRes
+     */
     public DefaultRes<User> findByUserIdx(final int userIdx) {
         final User user = userMapper.findByUserIdx(userIdx);
-        if(user != null) DefaultRes.res(StatusCode.OK, ResponseMessage.READ_USER, user);
+        if (user != null) DefaultRes.res(StatusCode.OK, ResponseMessage.READ_USER, user);
         return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER);
     }
 
+    /**
+     * 회원 가입
+     *
+     * @param signUpReq 회원 가입 데이터
+     * @return DefaultRes
+     */
     @Transactional
     public DefaultRes save(SignUpReq signUpReq) {
         if (signUpReq.checkProperties()) {
             final User user = userMapper.findByEmail(signUpReq.getEmail());
             if (user == null) {
                 try {
-                    if (signUpReq.getProfile() != null)
-                        signUpReq.setProfileUrl(s3FileUploadService.upload(signUpReq.getProfile()));
+                    if (signUpReq.getProfile() != null) signUpReq.setProfileUrl(s3FileUploadService.upload(signUpReq.getProfile()));
                     userMapper.save(signUpReq);
                     return DefaultRes.res(StatusCode.CREATED, ResponseMessage.CREATED_USER);
                 } catch (Exception e) {
@@ -54,21 +64,29 @@ public class UserService {
         return DefaultRes.res(StatusCode.BAD_REQUEST, ResponseMessage.FAIL_CREATE_USER);
     }
 
+    /**
+     * 회원 정보 수정
+     *
+     * @param userIdx   회원 고유 번호
+     * @param signUpReq 회원 가입 데이터
+     * @return DefaultRes
+     */
     @Transactional
     public DefaultRes<User> update(final int userIdx, SignUpReq signUpReq) {
-        User temp = findByUserIdx(userIdx).getData();
-        if (temp == null)
+        User user = findByUserIdx(userIdx).getData();
+
+        if (user == null)
             return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER);
 
         try {
-            //temp.update(signUpReq);
-            //if (signUpReq.getProfile() != null) temp.setU_profile(fileUploadService.upload(signUpReq.getProfile()));
+            if (signUpReq.getProfile() != null) signUpReq.setProfileUrl(s3FileUploadService.upload(signUpReq.getProfile()));
+            else signUpReq.setProfileUrl(user.getProfileUrl());
 
-            //userMapper.update(temp);
+            userMapper.update(signUpReq, userIdx);
 
-            temp = findByUserIdx(userIdx).getData();
-            temp.setAuth(true);
-            return DefaultRes.res(StatusCode.OK, ResponseMessage.UPDATE_USER, temp);
+            user = findByUserIdx(userIdx).getData();
+            user.setAuth(true);
+            return DefaultRes.res(StatusCode.OK, ResponseMessage.UPDATE_USER, user);
         } catch (Exception e) {
             log.error(e.getMessage());
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
@@ -76,6 +94,12 @@ public class UserService {
         }
     }
 
+    /**
+     * 회원 탈퇴
+     *
+     * @param userIdx 회원 고유 번호
+     * @return DefaultRes
+     */
     @Transactional
     public DefaultRes deleteByUserIdx(final int userIdx) {
         final User user = userMapper.findByUserIdx(userIdx);

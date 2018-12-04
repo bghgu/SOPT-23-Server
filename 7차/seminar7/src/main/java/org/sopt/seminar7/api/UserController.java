@@ -1,7 +1,6 @@
 package org.sopt.seminar7.api;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.annotations.Delete;
 import org.sopt.seminar7.dto.User;
 import org.sopt.seminar7.model.DefaultRes;
 import org.sopt.seminar7.model.SignUpReq;
@@ -26,6 +25,8 @@ import static org.sopt.seminar7.model.DefaultRes.FAIL_DEFAULT_RES;
 @Slf4j
 @RestController
 public class UserController {
+
+    private static final DefaultRes UNAUTHORIZED_RES = new DefaultRes(StatusCode.UNAUTHORIZED, ResponseMessage.UNAUTHORIZED);
 
     private final UserService userService;
 
@@ -57,7 +58,7 @@ public class UserController {
             @RequestPart("profile") final Optional<MultipartFile> profile) {
         try {
             if(profile.isPresent()) signUpReq.setProfile(profile.get());
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(userService.save(signUpReq), HttpStatus.OK);
         }catch (Exception e) {
             log.error(e.getMessage());
             return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -67,12 +68,16 @@ public class UserController {
     @Auth
     @PutMapping("/users/{userIdx}")
     public ResponseEntity updateUser(
+            @RequestHeader(value = "Authorization") final String header,
             @PathVariable("userIdx") final int userIdx,
             SignUpReq signUpReq,
             @RequestPart("profile") final Optional<MultipartFile> profile) {
         try {
             if(profile.isPresent()) signUpReq.setProfile(profile.get());
-            return new ResponseEntity<>(HttpStatus.OK);
+
+            if(jwtService.checkAuth(header, userIdx))
+                return new ResponseEntity<>(userService.update(userIdx, signUpReq), HttpStatus.OK);
+            return new ResponseEntity<>(UNAUTHORIZED_RES, HttpStatus.OK);
         }catch (Exception e) {
             log.error(e.getMessage());
             return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -81,9 +86,13 @@ public class UserController {
 
     @Auth
     @DeleteMapping("/users/{userIdx}")
-    public ResponseEntity deleteUser(@PathVariable("userIdx") final int userIdx) {
+    public ResponseEntity deleteUser(
+            @RequestHeader(value = "Authorization") final String header,
+            @PathVariable("userIdx") final int userIdx) {
         try {
-            return new ResponseEntity<>(HttpStatus.OK);
+            if(jwtService.checkAuth(header, userIdx))
+                return new ResponseEntity<>(userService.deleteByUserIdx(userIdx), HttpStatus.OK);
+            return new ResponseEntity<>(UNAUTHORIZED_RES, HttpStatus.OK);
         }catch (Exception e) {
             log.error(e.getMessage());
             return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);

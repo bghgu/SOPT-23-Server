@@ -4,12 +4,12 @@ import lombok.Data;
 import org.joda.time.DateTime;
 
 /**
- * Created by ds on 2018-11-30.
+ * Created by ds on 2018-12-04.
  */
 
 @Data
-public class Content {
-    private int contentIdx;
+public class Comment {
+    private int commentIdx;
     private int userIdx;
     private String body;
     private DateTime createDate;

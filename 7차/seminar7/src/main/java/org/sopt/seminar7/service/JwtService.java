@@ -8,6 +8,8 @@ import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.extern.slf4j.Slf4j;
+import org.sopt.seminar7.dto.User;
+import org.sopt.seminar7.model.DefaultRes;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -82,6 +84,17 @@ public class JwtService {
             log.error(e.getMessage());
         }
         return new Token();
+    }
+
+    /**
+     * 권환 확인
+     *
+     * @param header  Authorization
+     * @param userIdx 사용자 고유 번호
+     * @return boolean
+     */
+    public boolean checkAuth(final String header, final int userIdx) {
+        return decode(header).getUser_idx() == userIdx;
     }
 
     public static class Token {

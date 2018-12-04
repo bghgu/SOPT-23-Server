@@ -20,11 +20,11 @@ public interface UserMapper {
     @Select("SELECT * FROM user WHERE email = #{email}")
     User findByEmail(@Param("email") final String email);
 
-    @Insert("INSERT INTO user(name, part, email, password, profileUrl) VALUES(#{signUpReq.name}, #{signUpReq.part}, #{signUpReq.email}, #{signUpReq.password}, #{signUpReq.profileUrl})")
+    @Insert("INSERT INTO user(name, email, password, profileUrl) VALUES(#{signUpReq.name}, #{signUpReq.email}, #{signUpReq.password}, #{signUpReq.profileUrl})")
     void save(@Param("singUpReq") final SignUpReq signUpReq);
 
-    @Update("UPDATE user SET name = #{signUpReq.name}, part = #{signUpReq.part}, profileUrl = #{signUpReq.profileUrl}, WHERE userIdx = #{userIdx}")
-    void update(@Param("signUpReq") final SignUpReq signUpReq, @Param("userIdx") final int userIdx);
+    @Update("UPDATE user SET name = #{user.name}, password = #{user.password}, profileUrl = #{user.profileUrl}, WHERE userIdx = #{userIdx}")
+    void update(@Param("user") final SignUpReq signUpReq, @Param("userIdx") final int userIdx);
 
     @Delete("DELETE FROM user WHERE userIdx = #{userIdx}")
     void deleteByUserIdx(@Param("userIdx") final int userIdx);
