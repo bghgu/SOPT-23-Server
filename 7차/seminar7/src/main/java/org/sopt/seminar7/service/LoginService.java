@@ -1,5 +1,6 @@
 package org.sopt.seminar7.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.sopt.seminar7.dto.User;
 import org.sopt.seminar7.mapper.UserMapper;
 import org.sopt.seminar7.model.DefaultRes;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
  * Created by ds on 2018-11-30.
  */
 
+@Slf4j
 @Service
 public class LoginService {
 
@@ -24,14 +26,19 @@ public class LoginService {
         this.jwtService = jwtService;
     }
 
+    /**
+     * 로그인
+     *
+     * @param signUpReq 로그인 폼
+     * @return DefaultRes
+     */
     public DefaultRes login(final SignUpReq signUpReq) {
-        if(signUpReq.isLogin()) {
+        if (signUpReq.isLogin()) {
             final User user = userMapper.findByEmailAndPassword(signUpReq);
-            if(user != null) {
+            if (user != null) {
                 final JwtService.TokenRes tokenRes = new JwtService.TokenRes(jwtService.create(user.getUserIdx()));
                 return DefaultRes.res(StatusCode.OK, ResponseMessage.LOGIN_SUCCESS, tokenRes);
             }
-            return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER);
         }
         return DefaultRes.res(StatusCode.BAD_REQUEST, ResponseMessage.LOGIN_FAIL);
     }

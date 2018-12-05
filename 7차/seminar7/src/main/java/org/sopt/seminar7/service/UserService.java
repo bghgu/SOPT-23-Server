@@ -35,7 +35,7 @@ public class UserService {
      */
     public DefaultRes<User> findByUserIdx(final int userIdx) {
         final User user = userMapper.findByUserIdx(userIdx);
-        if (user != null) DefaultRes.res(StatusCode.OK, ResponseMessage.READ_USER, user);
+        if (user != null) return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_USER, user);
         return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER);
     }
 
@@ -51,7 +51,8 @@ public class UserService {
             final User user = userMapper.findByEmail(signUpReq.getEmail());
             if (user == null) {
                 try {
-                    if (signUpReq.getProfile() != null) signUpReq.setProfileUrl(s3FileUploadService.upload(signUpReq.getProfile()));
+                    if (signUpReq.getProfile() != null)
+                        signUpReq.setProfileUrl(s3FileUploadService.upload(signUpReq.getProfile()));
                     userMapper.save(signUpReq);
                     return DefaultRes.res(StatusCode.CREATED, ResponseMessage.CREATED_USER);
                 } catch (Exception e) {
@@ -78,8 +79,12 @@ public class UserService {
         if (user == null)
             return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER);
 
+        if (signUpReq.getName() == null)
+            return DefaultRes.res(StatusCode.BAD_REQUEST, ResponseMessage.FAIL_UPDATE_USER);
+
         try {
-            if (signUpReq.getProfile() != null) signUpReq.setProfileUrl(s3FileUploadService.upload(signUpReq.getProfile()));
+            if (signUpReq.getProfile() != null)
+                signUpReq.setProfileUrl(s3FileUploadService.upload(signUpReq.getProfile()));
             else signUpReq.setProfileUrl(user.getProfileUrl());
 
             userMapper.update(signUpReq, userIdx);

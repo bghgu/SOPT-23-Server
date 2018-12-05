@@ -21,9 +21,9 @@ public interface UserMapper {
     User findByEmail(@Param("email") final String email);
 
     @Insert("INSERT INTO user(name, email, password, profileUrl) VALUES(#{signUpReq.name}, #{signUpReq.email}, #{signUpReq.password}, #{signUpReq.profileUrl})")
-    void save(@Param("singUpReq") final SignUpReq signUpReq);
+    void save(@Param("signUpReq") final SignUpReq signUpReq);
 
-    @Update("UPDATE user SET name = #{user.name}, password = #{user.password}, profileUrl = #{user.profileUrl}, WHERE userIdx = #{userIdx}")
+    @Update("UPDATE user SET name = #{user.name}, profileUrl = #{user.profileUrl} WHERE userIdx = #{userIdx}")
     void update(@Param("user") final SignUpReq signUpReq, @Param("userIdx") final int userIdx);
 
     @Delete("DELETE FROM user WHERE userIdx = #{userIdx}")

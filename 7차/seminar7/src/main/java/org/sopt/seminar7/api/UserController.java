@@ -37,34 +37,56 @@ public class UserController {
         this.jwtService = jwtService;
     }
 
+    /**
+     * 회원 조회
+     *
+     * @param header  jwt token
+     * @param userIdx 회원 고유 번호
+     * @return ResponseEntity
+     */
     @GetMapping("/users/{userIdx}")
     public ResponseEntity getUser(
             @RequestHeader(value = "Authorization", required = false) final String header,
             @PathVariable("userIdx") final int userIdx) {
         try {
-            final int tokenValue = jwtService.decode(header).getUser_idx();
             DefaultRes<User> defaultRes = userService.findByUserIdx(userIdx);
-            if (tokenValue == userIdx) defaultRes.getData().setAuth(true);
+            if (jwtService.checkAuth(header, userIdx)) defaultRes.getData().setAuth(true);
             return new ResponseEntity<>(defaultRes, HttpStatus.OK);
-        }catch (Exception e) {
+        } catch (Exception e) {
             log.error(e.getMessage());
             return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
+    /**
+     * 회원 가입
+     *
+     * @param signUpReq 회원 데이터
+     * @param profile   프로필 사진
+     * @return ResponseEntity
+     */
     @PostMapping("/users")
     public ResponseEntity saveUser(
             SignUpReq signUpReq,
             @RequestPart("profile") final Optional<MultipartFile> profile) {
         try {
-            if(profile.isPresent()) signUpReq.setProfile(profile.get());
+            if (profile.isPresent()) signUpReq.setProfile(profile.get());
             return new ResponseEntity<>(userService.save(signUpReq), HttpStatus.OK);
-        }catch (Exception e) {
+        } catch (Exception e) {
             log.error(e.getMessage());
             return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
+    /**
+     * 회원 정보 수정
+     *
+     * @param header    jwt token
+     * @param userIdx   회원 고유 번호
+     * @param signUpReq 회원 데이터
+     * @param profile   프로필 사진
+     * @return ResponseEntity
+     */
     @Auth
     @PutMapping("/users/{userIdx}")
     public ResponseEntity updateUser(
@@ -73,12 +95,12 @@ public class UserController {
             SignUpReq signUpReq,
             @RequestPart("profile") final Optional<MultipartFile> profile) {
         try {
-            if(profile.isPresent()) signUpReq.setProfile(profile.get());
+            if (profile.isPresent()) signUpReq.setProfile(profile.get());
 
-            if(jwtService.checkAuth(header, userIdx))
+            if (jwtService.checkAuth(header, userIdx))
                 return new ResponseEntity<>(userService.update(userIdx, signUpReq), HttpStatus.OK);
             return new ResponseEntity<>(UNAUTHORIZED_RES, HttpStatus.OK);
-        }catch (Exception e) {
+        } catch (Exception e) {
             log.error(e.getMessage());
             return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -90,10 +112,10 @@ public class UserController {
             @RequestHeader(value = "Authorization") final String header,
             @PathVariable("userIdx") final int userIdx) {
         try {
-            if(jwtService.checkAuth(header, userIdx))
+            if (jwtService.checkAuth(header, userIdx))
                 return new ResponseEntity<>(userService.deleteByUserIdx(userIdx), HttpStatus.OK);
             return new ResponseEntity<>(UNAUTHORIZED_RES, HttpStatus.OK);
-        }catch (Exception e) {
+        } catch (Exception e) {
             log.error(e.getMessage());
             return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
         }

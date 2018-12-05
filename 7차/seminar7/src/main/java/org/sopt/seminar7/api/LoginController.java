@@ -9,6 +9,7 @@ import org.sopt.seminar7.utils.StatusCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import static org.sopt.seminar7.model.DefaultRes.FAIL_DEFAULT_RES;
@@ -27,12 +28,17 @@ public class LoginController {
         this.loginService = loginService;
     }
 
+    /**
+     * 로그인
+     *
+     * @param signUpReq 로그인 폼
+     * @return ResponseEntity
+     */
     @PostMapping("/login")
-    public ResponseEntity login(final SignUpReq signUpReq) {
+    public ResponseEntity login(@RequestBody final SignUpReq signUpReq) {
         try {
-            if(signUpReq.isLogin()) return new ResponseEntity<>(loginService.login(signUpReq), HttpStatus.OK);
-            return new ResponseEntity<>(DefaultRes.res(StatusCode.BAD_REQUEST, ResponseMessage.LOGIN_REQUIRED), HttpStatus.OK);
-        }catch (Exception e) {
+            return new ResponseEntity<>(loginService.login(signUpReq), HttpStatus.OK);
+        } catch (Exception e) {
             log.error(e.getMessage());
             return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
         }

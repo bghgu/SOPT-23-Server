@@ -2,7 +2,6 @@ package org.sopt.seminar7.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.sopt.seminar7.dto.User;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -16,12 +15,11 @@ public class SignUpReq {
     private String name;
     private String email;
     private String password;
-    private String profileUrl;
+    private String profileUrl = "https://s3.ap-northeast-2.amazonaws.com/sopt-23-api-test/Profile-icon-9.png";
     private MultipartFile profile;
 
     public boolean isLogin() {
-        if(email != null && password != null) return true;
-        return false;
+        return (email != null && password != null);
     }
 
     public boolean checkProperties() {
