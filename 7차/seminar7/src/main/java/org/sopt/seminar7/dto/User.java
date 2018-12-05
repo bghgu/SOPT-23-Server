@@ -1,7 +1,6 @@
 package org.sopt.seminar7.dto;
 
 import lombok.Data;
-import org.sopt.seminar7.model.SignUpReq;
 
 /**
  * Created by ds on 2018-11-28.
@@ -14,6 +13,4 @@ public class User {
     private String email;
     private String profileUrl;
     private boolean auth;
-
-
 }

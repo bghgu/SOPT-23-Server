@@ -62,15 +62,11 @@ public class UserController {
      * 회원 가입
      *
      * @param signUpReq 회원 데이터
-     * @param profile   프로필 사진
      * @return ResponseEntity
      */
     @PostMapping("/users")
-    public ResponseEntity saveUser(
-            SignUpReq signUpReq,
-            @RequestPart("profile") final Optional<MultipartFile> profile) {
+    public ResponseEntity saveUser(final SignUpReq signUpReq) {
         try {
-            if (profile.isPresent()) signUpReq.setProfile(profile.get());
             return new ResponseEntity<>(userService.save(signUpReq), HttpStatus.OK);
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -84,7 +80,6 @@ public class UserController {
      * @param header    jwt token
      * @param userIdx   회원 고유 번호
      * @param signUpReq 회원 데이터
-     * @param profile   프로필 사진
      * @return ResponseEntity
      */
     @Auth
@@ -92,11 +87,8 @@ public class UserController {
     public ResponseEntity updateUser(
             @RequestHeader(value = "Authorization") final String header,
             @PathVariable("userIdx") final int userIdx,
-            SignUpReq signUpReq,
-            @RequestPart("profile") final Optional<MultipartFile> profile) {
+            final SignUpReq signUpReq) {
         try {
-            if (profile.isPresent()) signUpReq.setProfile(profile.get());
-
             if (jwtService.checkAuth(header, userIdx))
                 return new ResponseEntity<>(userService.update(userIdx, signUpReq), HttpStatus.OK);
             return new ResponseEntity<>(UNAUTHORIZED_RES, HttpStatus.OK);
@@ -106,6 +98,13 @@ public class UserController {
         }
     }
 
+    /**
+     * 회원 탈퇴
+     *
+     * @param header  jwt Token
+     * @param userIdx 회원 고유 번호
+     * @return ResponseEntity
+     */
     @Auth
     @DeleteMapping("/users/{userIdx}")
     public ResponseEntity deleteUser(

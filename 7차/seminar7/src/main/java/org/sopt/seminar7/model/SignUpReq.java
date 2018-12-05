@@ -24,7 +24,5 @@ public class SignUpReq {
 
     public boolean checkProperties() {
         return (email != null && password != null && name != null);
-//        if(email != null && password != null && part != 0 && name != null) return true;
-//        return false;
     }
 }

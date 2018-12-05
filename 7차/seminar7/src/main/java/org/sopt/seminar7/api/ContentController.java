@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.sopt.seminar7.model.ContentReq;
 import org.sopt.seminar7.model.DefaultRes;
 import org.sopt.seminar7.service.ContentService;
+import org.sopt.seminar7.service.JwtService;
 import org.sopt.seminar7.utils.ResponseMessage;
 import org.sopt.seminar7.utils.StatusCode;
 import org.sopt.seminar7.utils.auth.Auth;
@@ -27,9 +28,11 @@ public class ContentController {
     private static final DefaultRes UNAUTHORIZED_RES = new DefaultRes(StatusCode.UNAUTHORIZED, ResponseMessage.UNAUTHORIZED);
 
     private final ContentService contentService;
+    private final JwtService jwtService;
 
-    public ContentController(final ContentService contentService) {
+    public ContentController(final ContentService contentService, final JwtService jwtService) {
         this.contentService = contentService;
+        this.jwtService = jwtService;
     }
 
     @GetMapping("/contents")
@@ -37,7 +40,7 @@ public class ContentController {
         try {
 
             return new ResponseEntity<>(HttpStatus.OK);
-        }catch (Exception e) {
+        } catch (Exception e) {
             log.error(e.getMessage());
             return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -47,19 +50,27 @@ public class ContentController {
     public ResponseEntity getContent(@PathVariable("contentIdx") final int contentIdx) {
         try {
             return new ResponseEntity<>(HttpStatus.OK);
-        }catch (Exception e) {
+        } catch (Exception e) {
             log.error(e.getMessage());
             return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
+    /**
+     * 컨텐츠 작성
+     *
+     * @param contentReq 컨텐츠 데이터
+     * @return ResponseEntity
+     */
     @Auth
     @PostMapping("/contents")
-    public ResponseEntity saveContent(ContentReq contentReq, @RequestPart("photo") final Optional<MultipartFile> photo) {
+    public ResponseEntity saveContent(
+            @RequestHeader(value = "Authorization") final String header,
+            final ContentReq contentReq) {
         try {
-            if(photo.isPresent()) contentReq.setPhoto(photo.get());
-            return new ResponseEntity<>(HttpStatus.OK);
-        }catch (Exception e) {
+            contentReq.setUserIdx(jwtService.decode(header).getUser_idx());
+            return new ResponseEntity<>(contentService.save(contentReq), HttpStatus.OK);
+        } catch (Exception e) {
             log.error(e.getMessage());
             return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -70,7 +81,7 @@ public class ContentController {
     public ResponseEntity like() {
         try {
             return new ResponseEntity<>(HttpStatus.OK);
-        }catch (Exception e) {
+        } catch (Exception e) {
             log.error(e.getMessage());
             return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -80,12 +91,11 @@ public class ContentController {
     @PutMapping("/contents/{contentIdx}")
     public ResponseEntity updateContent(
             @PathVariable("contentIdx") final int contentIdx,
-            ContentReq contentReq,
-            @RequestPart("photo") final Optional<MultipartFile> photo) {
+            ContentReq contentReq) {
         try {
-            if(photo.isPresent()) contentReq.setPhoto(photo.get());
+            //if (photo.isPresent()) contentReq.setPhoto(photo.get());
             return new ResponseEntity<>(HttpStatus.OK);
-        }catch (Exception e) {
+        } catch (Exception e) {
             log.error(e.getMessage());
             return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -96,7 +106,7 @@ public class ContentController {
     public ResponseEntity deleteContent(@PathVariable("contentIdx") final int contentIdx) {
         try {
             return new ResponseEntity<>(HttpStatus.OK);
-        }catch (Exception e) {
+        } catch (Exception e) {
             log.error(e.getMessage());
             return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
         }

@@ -17,14 +17,14 @@ public class ResponseMessage {
     public static final String FAIL_UPDATE_USER = "회원 정보 수정 실패";
     public static final String DELETE_USER = "회원 탈퇴 성공";
 
-    public static final String READ_ALL_CONTENTS = "모든 글 조회 성공";
-    public static final String READ_CONTENT = "글 조회 성공";
-    public static final String NOT_FOUND_CONTENT = "글이 존재하지 않습니다.";
-    public static final String CREATE_CONTENT = "글 작성 성공";
-    public static final String FAIL_CREATE_CONTENT = "글 작성 실패";
-    public static final String UPDATE_CONTENT = "글 수정 성공";
-    public static final String DELETE_CONTENT = "글 삭제 성공";
-    public static final String LIKE_CONTENT = "글 좋아요/해제 성공";
+    public static final String READ_ALL_CONTENTS = "모든 컨텐츠 조회 성공";
+    public static final String READ_CONTENT = "컨텐츠 조회 성공";
+    public static final String NOT_FOUND_CONTENT = "컨텐츠가 존재하지 않습니다.";
+    public static final String CREATE_CONTENT = "컨텐츠 작성 성공";
+    public static final String FAIL_CREATE_CONTENT = "컨텐츠 작성 실패";
+    public static final String UPDATE_CONTENT = "컨텐츠 수정 성공";
+    public static final String DELETE_CONTENT = "컨텐츠 삭제 성공";
+    public static final String LIKE_CONTENT = "컨텐츠 좋아요/해제 성공";
 
     public static final String READ_ALL_COMMENTS = "모든 댓글 조회 성공";
     public static final String READ_COMMENT = "댓글 조회 성공";

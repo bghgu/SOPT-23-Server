@@ -12,5 +12,6 @@ public class Comment {
     private int commentIdx;
     private int userIdx;
     private String body;
+    private int likeCount;
     private DateTime createDate;
 }
