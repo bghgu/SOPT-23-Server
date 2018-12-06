@@ -113,6 +113,7 @@ public class ContentController {
 
     /**
      * 컨텐츠 좋아요
+     *
      * @return
      */
     @Auth
@@ -132,9 +133,9 @@ public class ContentController {
     /**
      * 컨텐츠 수정
      *
-     * @param header
-     * @param contentIdx
-     * @param contentReq
+     * @param header     jwt token
+     * @param contentIdx 컨텐츠 고유 번호
+     * @param contentReq 컨텐츠 데이터
      * @return
      */
     @Auth

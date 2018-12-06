@@ -15,6 +15,11 @@ import java.util.List;
 @Mapper
 public interface ContentPhotoMapper {
 
+    /**
+     * 컨텐츠 사진 조회
+     * @param contentIdx 컨텐츠 고유 번호
+     * @return 사진 리스트
+     */
     @Select("SELECT * FROM contentPhoto WHERE contentIdx = #{contentIdx}")
     List<ContentPhoto> findAllByContentIdx(@Param("contentIdx") final int contentIdx);
 

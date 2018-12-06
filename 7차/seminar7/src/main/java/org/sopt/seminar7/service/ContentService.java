@@ -112,17 +112,21 @@ public class ContentService {
 
         try {
             if (contentLike == null) {
+                //좋아요 카운트 반영
                 contentMapper.like(contentIdx, content.getLikeCount() + 1);
+                //좋아요
                 contentLikeMapper.save(userIdx, contentIdx);
             } else {
+                //싫어요 카운트 반영
                 contentMapper.like(contentIdx, content.getLikeCount() - 1);
+                //싫어요
                 contentLikeMapper.deleteByUserIdxAndContentIdx(userIdx, contentIdx);
             }
 
             content = findByContentIdx(contentIdx).getData();
             content.setAuth(checkAuth(userIdx, contentIdx));
             content.setLike(checkLike(userIdx, contentIdx));
-            
+
             return DefaultRes.res(StatusCode.OK, ResponseMessage.LIKE_CONTENT, content);
         } catch (Exception e) {
             log.error(e.getMessage());

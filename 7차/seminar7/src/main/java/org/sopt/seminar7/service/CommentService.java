@@ -5,6 +5,7 @@ import org.sopt.seminar7.dto.Comment;
 import org.sopt.seminar7.dto.CommentLike;
 import org.sopt.seminar7.mapper.CommentLikeMapper;
 import org.sopt.seminar7.mapper.CommentMapper;
+import org.sopt.seminar7.model.CommentReq;
 import org.sopt.seminar7.model.DefaultRes;
 import org.sopt.seminar7.utils.ResponseMessage;
 import org.sopt.seminar7.utils.StatusCode;
@@ -63,15 +64,15 @@ public class CommentService {
     /**
      * 댓글 작성
      *
-     * @param comment 댓글
+     * @param commentReq 댓글 데이터
      * @return DefaultRes
      */
     @Transactional
-    public DefaultRes save(final Comment comment) {
-        if (contentService.findByContentIdx(comment.getB_id()).getData() == null)
+    public DefaultRes save(final CommentReq commentReq) {
+        if (contentService.findByContentIdx(commentReq.getContentIdx()).getData() == null)
             return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_CONTENT);
         try {
-            commentMapper.save(comment);
+            commentMapper.save(commentReq);
             return DefaultRes.res(StatusCode.CREATED, ResponseMessage.CREATE_COMMENT);
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -80,13 +81,6 @@ public class CommentService {
         }
     }
 
-    /**
-     * 댓글 좋아요
-     *
-     * @param auth
-     * @param commentIdx
-     * @return DefaultRes
-     */
     @Transactional
     public DefaultRes likes(final int userIdx, final int commentIdx) {
         Comment comment = commentMapper.findByCommentIdx(commentIdx);
@@ -96,12 +90,10 @@ public class CommentService {
 
         try {
             if (commentLike == null) {
-                comment.likes();
-                commentMapper.like(commentIdx, comment.getC_like());
+                commentMapper.like(commentIdx, comment.getCommentIdx() + 1);
                 commentLikeMapper.save(userIdx, commentIdx);
             } else {
-                comment.unLikes();
-                commentMapper.like(commentIdx, comment.getC_like());
+                commentMapper.like(commentIdx, comment.getCommentIdx() - 1);
                 commentLikeMapper.deleteByUserIdxAndCommentIdx(userIdx, commentIdx);
             }
             comment = findByCommentIdx(commentIdx).getData();
@@ -116,18 +108,18 @@ public class CommentService {
     /**
      * 댓글 수정
      *
-     * @param comment    댓글 내용
+     * @param commentReq 댓글 내용
      * @return DefaultRes
      */
     @Transactional
-    public DefaultRes<Comment> update(final Comment comment) {
-        Comment temp = commentMapper.findByCommentIdx(comment.getC_id());
+    public DefaultRes<Comment> update(final CommentReq commentReq) {
+        Comment temp = commentMapper.findByCommentIdx(commentReq.getCommentIdx());
         if (temp == null)
             return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_COMMENT);
 
         try {
-            commentMapper.updateByCommentIdx(comment);
-            temp = commentMapper.findByCommentIdx(comment.getC_id());
+            commentMapper.updateByCommentIdx(commentReq);
+            temp = commentMapper.findByCommentIdx(commentReq.getCommentIdx());
             temp.setAuth(true);
             return DefaultRes.res(StatusCode.OK, ResponseMessage.UPDATE_COMMENT, temp);
         } catch (Exception e) {
@@ -150,7 +142,7 @@ public class CommentService {
             return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_COMMENT);
 
         try {
-            commentMapper.deleteByConmmentIdx(commentIdx);
+            commentMapper.deleteByCommentIdx(commentIdx);
             return DefaultRes.res(StatusCode.NO_CONTENT, ResponseMessage.DELETE_COMMENT);
         } catch (Exception e) {
             log.error(e.getMessage());
