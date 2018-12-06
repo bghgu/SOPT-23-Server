@@ -39,7 +39,7 @@ public interface ContentMapper {
      */
     @Insert("INSERT INTO content(userIdx, body, createdDate) VALUES(#{contentReq.userIdx}, #{contentReq.body}, #{contentReq.createdDate})")
     @Options(useGeneratedKeys = true, keyProperty = "contentReq.contentIdx")
-    int save(@Param("contentReq") final ContentReq contentReq);
+    void save(@Param("contentReq") final ContentReq contentReq);
 
     /**
      * 사진 저장

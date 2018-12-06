@@ -90,22 +90,35 @@ public class ContentController {
     @Auth
     @PutMapping("/contents/{contentIdx}")
     public ResponseEntity updateContent(
+            @RequestHeader(value = "Authorization") final String header,
             @PathVariable("contentIdx") final int contentIdx,
-            ContentReq contentReq) {
+            final ContentReq contentReq) {
         try {
-            //if (photo.isPresent()) contentReq.setPhoto(photo.get());
-            return new ResponseEntity<>(HttpStatus.OK);
+            if (contentService.checkAuth(jwtService.decode(header).getUser_idx(), contentIdx))
+                return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(UNAUTHORIZED_RES, HttpStatus.OK);
         } catch (Exception e) {
             log.error(e.getMessage());
             return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
+    /**
+     * 컨텐츠 삭제
+     *
+     * @param header     jwt token
+     * @param contentIdx 컨텐츠 고유 번호
+     * @return ResponseEntity
+     */
     @Auth
     @DeleteMapping("/contents/{contentIdx}")
-    public ResponseEntity deleteContent(@PathVariable("contentIdx") final int contentIdx) {
+    public ResponseEntity deleteContent(
+            @RequestHeader(value = "Authorization") final String header,
+            @PathVariable("contentIdx") final int contentIdx) {
         try {
-            return new ResponseEntity<>(HttpStatus.OK);
+            if (contentService.checkAuth(jwtService.decode(header).getUser_idx(), contentIdx))
+                return new ResponseEntity<>(contentService.deleteByContentIdx(contentIdx), HttpStatus.OK);
+            return new ResponseEntity<>(UNAUTHORIZED_RES, HttpStatus.OK);
         } catch (Exception e) {
             log.error(e.getMessage());
             return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);

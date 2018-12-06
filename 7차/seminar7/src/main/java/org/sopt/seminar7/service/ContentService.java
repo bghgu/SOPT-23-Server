@@ -69,6 +69,7 @@ public class ContentService {
             try {
                 contentMapper.save(contentReq);
                 final int contentIdx = contentReq.getContentIdx();
+
                 for (MultipartFile photo : contentReq.getPhoto()) {
                     contentMapper.savePhoto(contentIdx, s3FileUploadService.upload(photo));
                 }
@@ -138,35 +139,34 @@ public class ContentService {
 //            return DefaultRes.res(StatusCode.DB_ERROR, ResponseMessage.DB_ERROR);
 //        }
 //    }
-//
-//    @Transactional
-//    public DefaultRes deleteByContentIdx(final int contentIdx) {
-//        //글 조회
-//        final Content content = findByContentIdx(contentIdx).getData();
-//        if (content == null)
-//            return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_CONTENT);
-//
-//        //삭제
-//        try {
-//            contentMapper.deleteByContentIdx(contentIdx);
-//            return DefaultRes.res(StatusCode.NO_CONTENT, ResponseMessage.DELETE_CONTENT);
-//        } catch (Exception e) {
-//            log.error(e.getMessage());
-//            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-//            return DefaultRes.res(StatusCode.DB_ERROR, ResponseMessage.DB_ERROR);
-//        }
-//    }
-//
-//    /**
-//     * 글 권환 확인
-//     *
-//     * @param userIdx    사용자 고유 번호
-//     * @param contentIdx 글 고유 번호
-//     * @return boolean
-//     */
-//    public boolean checkAuth(final int userIdx, final int contentIdx) {
-//        return userIdx == findByContentIdx(contentIdx).getData().getU_id();
-//    }
+
+    /**
+     * 컨텐츠 삭제
+     * @param contentIdx 컨텐츠 고유 번호
+     * @return DefaultRes
+     */
+    @Transactional
+    public DefaultRes deleteByContentIdx(final int contentIdx) {
+        try {
+            contentMapper.deleteByContentIdx(contentIdx);
+            return DefaultRes.res(StatusCode.NO_CONTENT, ResponseMessage.DELETE_CONTENT);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return DefaultRes.res(StatusCode.DB_ERROR, ResponseMessage.DB_ERROR);
+        }
+    }
+
+    /**
+     * 글 권환 확인
+     *
+     * @param userIdx    사용자 고유 번호
+     * @param contentIdx 글 고유 번호
+     * @return boolean
+     */
+    public boolean checkAuth(final int userIdx, final int contentIdx) {
+        return userIdx == findByContentIdx(contentIdx).getData().getUserIdx();
+    }
 
     /**
      * 좋아요 여부 확인
