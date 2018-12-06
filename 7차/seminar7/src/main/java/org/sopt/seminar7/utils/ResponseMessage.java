@@ -23,6 +23,7 @@ public class ResponseMessage {
     public static final String CREATE_CONTENT = "컨텐츠 작성 성공";
     public static final String FAIL_CREATE_CONTENT = "컨텐츠 작성 실패";
     public static final String UPDATE_CONTENT = "컨텐츠 수정 성공";
+    public static final String FAIL_UPDATE_CONTENT = "컨텐츠 수정 실패";
     public static final String DELETE_CONTENT = "컨텐츠 삭제 성공";
     public static final String LIKE_CONTENT = "컨텐츠 좋아요/해제 성공";
 

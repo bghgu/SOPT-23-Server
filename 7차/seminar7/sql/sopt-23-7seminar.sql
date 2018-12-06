@@ -44,6 +44,7 @@ CREATE TABLE comment
     `body`         VARCHAR(45)    NULL        COMMENT '댓글 내용', 
     `createdDate`  DATETIME       NULL        COMMENT '작성 날짜', 
     `likeCount`    INT            NULL        COMMENT '좋아요 카운트', 
+    `contentIdx`   INT            NULL        COMMENT '컨텐츠 고유 번호', 
     PRIMARY KEY (commentIdx)
 );
 
@@ -56,6 +57,8 @@ CREATE INDEX comment_Index_1 ON comment
 
 ALTER TABLE comment ADD CONSTRAINT FK_comment_userIdx_user_userIdx FOREIGN KEY (userIdx)
  REFERENCES user (userIdx)  ON DELETE RESTRICT ON UPDATE RESTRICT;
+ALTER TABLE comment ADD CONSTRAINT FK_comment_contentIdx_content_contentIdx FOREIGN KEY (contentIdx)
+ REFERENCES content (contentIdx)  ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 
 -- contentLike Table Create SQL
