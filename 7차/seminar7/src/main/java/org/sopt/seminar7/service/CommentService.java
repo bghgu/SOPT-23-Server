@@ -43,7 +43,7 @@ public class CommentService {
      */
     public DefaultRes<List<Comment>> findByContentIdx(final int contentIdx) {
         List<Comment> commentList = commentMapper.findAllByContentIdx(contentIdx);
-        if (commentList.isEmpty()) return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_COMMENT);
+        if (commentList.isEmpty()) return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_CONTENT);
         return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_ALL_COMMENTS, commentList);
     }
 
@@ -53,12 +53,12 @@ public class CommentService {
      * @param commentIdx 댓글 고유 번호
      * @return 댓글
      */
-    public DefaultRes<Comment> findByCommentIdx(final int commentIdx) {
+    public Comment findByCommentIdx(final int commentIdx) {
         final Comment comment = commentMapper.findByCommentIdx(commentIdx);
-        if (comment == null) return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_COMMENT);
+        if (comment == null) return new Comment();
         //if (comment.getU_id() == auth) comment.setAuth(true);
         CommentLike commentLike;
-        return DefaultRes.res(StatusCode.OK, ResponseMessage.READ_COMMENT, comment);
+        return comment;
     }
 
     /**
@@ -72,6 +72,8 @@ public class CommentService {
         if (contentService.findByContentIdx(commentReq.getContentIdx()).getData() == null)
             return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_CONTENT);
         try {
+            log.info(commentReq.toString());
+
             commentMapper.save(commentReq);
             return DefaultRes.res(StatusCode.CREATED, ResponseMessage.CREATE_COMMENT);
         } catch (Exception e) {
@@ -81,6 +83,13 @@ public class CommentService {
         }
     }
 
+    /**
+     * 댓글 좋아요
+     *
+     * @param userIdx 회원 고유 번호
+     * @param commentIdx 댓글 고유 번호
+     * @return
+     */
     @Transactional
     public DefaultRes likes(final int userIdx, final int commentIdx) {
         Comment comment = commentMapper.findByCommentIdx(commentIdx);
@@ -90,13 +99,17 @@ public class CommentService {
 
         try {
             if (commentLike == null) {
-                commentMapper.like(commentIdx, comment.getCommentIdx() + 1);
+                commentMapper.like(commentIdx, comment.getLikeCount() + 1);
                 commentLikeMapper.save(userIdx, commentIdx);
             } else {
-                commentMapper.like(commentIdx, comment.getCommentIdx() - 1);
+                commentMapper.like(commentIdx, comment.getLikeCount() - 1);
                 commentLikeMapper.deleteByUserIdxAndCommentIdx(userIdx, commentIdx);
             }
-            comment = findByCommentIdx(commentIdx).getData();
+
+            comment = findByCommentIdx(commentIdx);
+            comment.setAuth(checkAuth(userIdx, commentIdx));
+            comment.setLike(checkLike(userIdx, commentIdx));
+
             return DefaultRes.res(StatusCode.OK, ResponseMessage.LIKE_COMMENT, comment);
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -159,7 +172,7 @@ public class CommentService {
      * @return boolean
      */
     public boolean checkAuth(final int userIdx, final int commentIdx) {
-        return userIdx == findByCommentIdx(commentIdx).getData().getUserIdx();
+        return userIdx == findByCommentIdx(commentIdx).getUserIdx();
     }
 
     public boolean checkLike(final int userIdx, final int commentIdx) {

@@ -36,7 +36,7 @@ public interface CommentMapper {
      *
      * @param commentReq 댓글 데이터
      */
-    @Insert("INSERT INTO comment(userIdx, body, createdDate, contentIdx) VALUES(commentReq.userIdx, commentReq.body, commentReq.createdDate, commentReq.contentIdx)")
+    @Insert("INSERT INTO comment(userIdx, body, createdDate, contentIdx) VALUES(#{commentReq.userIdx}, #{commentReq.body}, #{commentReq.createdDate}, #{commentReq.contentIdx})")
     @Options(useGeneratedKeys = true, keyProperty = "commentReq.commentIdx")
     void save(@Param("commentReq") final CommentReq commentReq);
 
@@ -62,6 +62,6 @@ public interface CommentMapper {
      *
      * @param commentIdx 댓글 고유 번호
      */
-    @Delete("DELETE FROM comment WHERE c_id = #{c_id}")
-    void deleteByCommentIdx(@Param("c_id") final int commentIdx);
+    @Delete("DELETE FROM comment WHERE commentIdx = #{commentIdx}")
+    void deleteByCommentIdx(@Param("commentIdx") final int commentIdx);
 }

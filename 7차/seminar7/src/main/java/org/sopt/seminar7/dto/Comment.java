@@ -1,7 +1,8 @@
 package org.sopt.seminar7.dto;
 
 import lombok.Data;
-import org.joda.time.DateTime;
+
+import java.util.Date;
 
 /**
  * Created by ds on 2018-12-04.
@@ -18,7 +19,7 @@ public class Comment {
     //좋아요 갯수
     private int likeCount;
     //작성 날짜
-    private DateTime createDate;
+    private Date createDate;
     //컨텐츠 고유 번호
     private int contentIdx;
     //댓글 수정 및 삭제 권한

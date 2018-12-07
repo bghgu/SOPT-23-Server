@@ -50,9 +50,11 @@ public class CommentController {
         try {
             final int userIdx = jwtService.decode(header).getUser_idx();
             DefaultRes<List<Comment>> defaultRes = commentService.findByContentIdx(contentIdx);
-            for (Comment c : defaultRes.getData()) {
-                c.setAuth(c.getUserIdx() == userIdx);
-                c.setLike(commentService.checkLike(userIdx, c.getUserIdx()));
+            if(defaultRes.getData() != null) {
+                for (Comment c : defaultRes.getData()) {
+                    c.setAuth(c.getUserIdx() == userIdx);
+                    c.setLike(commentService.checkLike(userIdx, c.getUserIdx()));
+                }
             }
             return new ResponseEntity<>(defaultRes, HttpStatus.OK);
         } catch (Exception e) {

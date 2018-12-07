@@ -117,7 +117,7 @@ public class ContentController {
      * @return
      */
     @Auth
-    @PutMapping("/contents/{contentIdx}/likes")
+    @PostMapping("/contents/{contentIdx}/likes")
     public ResponseEntity like(
             @RequestHeader(value = "Authorization") final String header,
             @PathVariable("contentIdx") final int contentIdx) {
