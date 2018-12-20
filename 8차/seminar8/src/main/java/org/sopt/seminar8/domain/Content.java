@@ -11,6 +11,7 @@ import java.util.Date;
 
 @Data
 @Entity
+@Table(name = "content")
 public class Content {
 
     @Id
@@ -18,6 +19,6 @@ public class Content {
     private int contentIdx;
 
     private String body;
-    private int likeCount;
-    private Date createDate;
+    private int likeCount = 0;
+    private Date createdDate = new Date();
 }

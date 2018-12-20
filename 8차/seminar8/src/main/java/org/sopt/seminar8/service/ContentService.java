@@ -2,7 +2,6 @@ package org.sopt.seminar8.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.sopt.seminar8.domain.Content;
-import org.sopt.seminar8.model.ContentReq;
 import org.sopt.seminar8.model.DefaultRes;
 import org.sopt.seminar8.repository.ContentRepository;
 import org.sopt.seminar8.utils.ResponseMessage;
@@ -10,9 +9,6 @@ import org.sopt.seminar8.utils.StatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 /**
  * Created by ds on 2018-12-19.
@@ -28,15 +24,15 @@ public class ContentService {
         this.contentRepository = contentRepository;
     }
 
-    public DefaultRes<List<Content>> findAll() {
-        List<Content> contentList = contentRepository.findAll();
+    public DefaultRes<Iterable<Content>> findAll() {
+        Iterable<Content> contentList = contentRepository.findAll();
         return DefaultRes.res(StatusCode.OK, "조회 성공", contentList);
     }
 
     @Transactional
-    public DefaultRes save(final ContentReq contentReq) {
+    public DefaultRes save(final Content content) {
         try {
-            contentRepository.save(contentReq);
+            contentRepository.save(content);
             return DefaultRes.res(StatusCode.CREATED, "저장 성공");
         } catch (Exception e) {
             log.info(e.getMessage());
