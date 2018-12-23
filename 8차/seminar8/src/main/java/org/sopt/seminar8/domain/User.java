@@ -1,6 +1,7 @@
 package org.sopt.seminar8.domain;
 
 import lombok.Data;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.*;
 
@@ -11,6 +12,7 @@ import javax.persistence.*;
 @Data
 @Entity
 @Table(name = "user")
+@Document
 public class User {
 
     @Id
