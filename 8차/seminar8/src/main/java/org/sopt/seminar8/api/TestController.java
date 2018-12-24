@@ -5,6 +5,7 @@ import org.sopt.seminar8.domain.Item;
 import org.sopt.seminar8.mapper.ItemMapper;
 import org.sopt.seminar8.repository.ItemRepository;
 import org.sopt.seminar8.repository.MongoDBRepository;
+import org.sopt.seminar8.repository.RedisRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,12 +27,15 @@ public class TestController {
     private final ItemRepository itemRepository;
     //mongoDB
     private final MongoDBRepository mongoDBRepository;
+    //redis
+    private final RedisRepository redisRepository;
 
     public TestController(final ItemMapper itemMapper, final ItemRepository itemRepository,
-                          final MongoDBRepository mongoDBRepository) {
+                          final MongoDBRepository mongoDBRepository, final RedisRepository redisRepository) {
         this.itemMapper = itemMapper;
         this.itemRepository = itemRepository;
         this.mongoDBRepository = mongoDBRepository;
+        this.redisRepository = redisRepository;
     }
 
     @GetMapping("mybatis")
@@ -104,7 +108,23 @@ public class TestController {
     @GetMapping("redis")
     public ResponseEntity redisRedis() {
         try {
-            log.info("redis test");
+            log.info("----------------redis test start----------------");
+
+            log.info("----------------redis insert data----------------");
+            redisRepository.save(new Item());
+
+            log.info("----------------redis findAll data----------------");
+            Iterable<Item> contentList = redisRepository.findAll();
+            log.info(contentList.toString());
+
+            log.info("----------------redis delete data----------------");
+            //redisRepository.deleteByName("test");
+            redisRepository.delete(new Item());
+
+            log.info("----------------redis findAll data----------------");
+            contentList = redisRepository.findAll();
+            log.info(contentList.toString());
+
             return new ResponseEntity(HttpStatus.OK);
         } catch (Exception e) {
             log.error(e.getMessage());
