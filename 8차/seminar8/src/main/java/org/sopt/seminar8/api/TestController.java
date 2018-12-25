@@ -2,15 +2,18 @@ package org.sopt.seminar8.api;
 
 import lombok.extern.slf4j.Slf4j;
 import org.sopt.seminar8.domain.Item;
+import org.sopt.seminar8.domain.redis.Token;
 import org.sopt.seminar8.mapper.ItemMapper;
 import org.sopt.seminar8.repository.ItemRepository;
 import org.sopt.seminar8.repository.MongoDBRepository;
 import org.sopt.seminar8.repository.RedisRepository;
+import org.sopt.seminar8.utils.ContextUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
@@ -97,7 +100,25 @@ public class TestController {
     @GetMapping("mongodb")
     public ResponseEntity mongoDBTest() {
         try {
-            log.info("mongodb test");
+            log.info("----------------mongodb test start----------------");
+
+            log.info("----------------mongodb insert data----------------");
+            mongoDBRepository.save(new Item());
+
+            log.info("----------------mongodb findAll data----------------");
+            Iterable<Item> contentList = mongoDBRepository.findAll();
+            log.info(contentList.toString());
+
+            log.info("----------------mongodb delete data----------------");
+            Item item = new Item();
+            item.setName("test");
+            //id로 삭제
+            mongoDBRepository.delete(item);
+
+            log.info("----------------mongodb findAll data----------------");
+            contentList = mongoDBRepository.findAll();
+            log.info(contentList.toString());
+
             return new ResponseEntity(HttpStatus.OK);
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -108,18 +129,22 @@ public class TestController {
     @GetMapping("redis")
     public ResponseEntity redisRedis() {
         try {
+
+            HttpSession httpSession = ContextUtils.getSession(true);
+            log.info(httpSession.getId());
+
             log.info("----------------redis test start----------------");
 
             log.info("----------------redis insert data----------------");
-            redisRepository.save(new Item());
+            redisRepository.save(new Token());
 
             log.info("----------------redis findAll data----------------");
-            Iterable<Item> contentList = redisRepository.findAll();
+            Iterable<Token> contentList = redisRepository.findAll();
             log.info(contentList.toString());
 
             log.info("----------------redis delete data----------------");
             //redisRepository.deleteByName("test");
-            redisRepository.delete(new Item());
+            redisRepository.delete(new Token());
 
             log.info("----------------redis findAll data----------------");
             contentList = redisRepository.findAll();

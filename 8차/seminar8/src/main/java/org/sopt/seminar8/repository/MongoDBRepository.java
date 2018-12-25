@@ -1,7 +1,6 @@
 package org.sopt.seminar8.repository;
 
 import org.sopt.seminar8.domain.Item;
-import org.springframework.data.mongodb.repository.MongoRepository;
 
 /**
  * Created by ds on 2018-12-23.
@@ -11,5 +10,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  * Spring Data MongoDB
  */
 
-public interface MongoDBRepository extends MongoRepository<Item, Integer> {
+public interface MongoDBRepository extends org.springframework.data.mongodb.repository.MongoRepository<Item, Integer> {
+
 }
