@@ -1,7 +1,9 @@
 package org.sopt.seminar8.api;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Param;
 import org.sopt.seminar8.domain.Item;
+import org.sopt.seminar8.domain.mongo.Content;
 import org.sopt.seminar8.domain.redis.Token;
 import org.sopt.seminar8.mapper.ItemMapper;
 import org.sopt.seminar8.repository.ItemRepository;
@@ -68,7 +70,7 @@ public class TestController {
     }
 
     @GetMapping("jpa")
-    public ResponseEntity jpaTest() {
+    public ResponseEntity jpaTest(@Param("phone") final String phone) {
         try {
             log.info("----------------jpa test start----------------");
 
@@ -81,10 +83,6 @@ public class TestController {
 
             log.info("----------------jpa delete data----------------");
             itemRepository.deleteByName("test");
-            Item item = new Item();
-            item.setName("test");
-            //id로 삭제
-            itemRepository.delete(item);
 
             log.info("----------------jpa findAll data----------------");
             contentList = itemRepository.findAll();
@@ -103,17 +101,17 @@ public class TestController {
             log.info("----------------mongodb test start----------------");
 
             log.info("----------------mongodb insert data----------------");
-            mongoDBRepository.save(new Item());
+            mongoDBRepository.save(new Content());
 
             log.info("----------------mongodb findAll data----------------");
-            Iterable<Item> contentList = mongoDBRepository.findAll();
+            Iterable<Content> contentList = mongoDBRepository.findAll();
             log.info(contentList.toString());
 
             log.info("----------------mongodb delete data----------------");
-            Item item = new Item();
-            item.setName("test");
+            Content content = new Content();
+            content.setBody("test");
             //id로 삭제
-            mongoDBRepository.delete(item);
+            mongoDBRepository.delete(content);
 
             log.info("----------------mongodb findAll data----------------");
             contentList = mongoDBRepository.findAll();

@@ -17,7 +17,6 @@ import javax.persistence.*;
 //JPA 테이블 이름 명시
 //테이블 네임 맵핑 기본값은 첫글자 대문자 (ex. Item)
 @Table(name = "item")
-@Document(collection = "item")
 public class Item {
 
     @Id
