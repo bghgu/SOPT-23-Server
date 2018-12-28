@@ -1,15 +1,22 @@
 package org.sopt.seminar8.api;
 
 import lombok.extern.slf4j.Slf4j;
+import org.sopt.seminar8.domain.Content;
 import org.sopt.seminar8.domain.Item;
 import org.sopt.seminar8.domain.Token;
+import org.sopt.seminar8.mapper.ItemMapper;
 import org.sopt.seminar8.repository.ItemRepository;
+import org.sopt.seminar8.repository.MongoDBRepository;
 import org.sopt.seminar8.repository.RedisRepository;
+import org.sopt.seminar8.utils.ContextUtils;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpSession;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -20,27 +27,97 @@ import java.util.Optional;
 @RestController
 public class TestController {
 
+    //mybatis
+    private final ItemMapper itemMapper;
     //jpa
     private final ItemRepository itemRepository;
+    //mongoDB
+    private final MongoDBRepository mongoDBRepository;
+    //redis
+    private final RedisRepository redisRepository;
 
-    public TestController(final ItemRepository itemRepository) {
+    public TestController(final ItemMapper itemMapper, final ItemRepository itemRepository,
+                          final MongoDBRepository mongoDBRepository, final RedisRepository redisRepository) {
+        this.itemMapper = itemMapper;
         this.itemRepository = itemRepository;
+        this.mongoDBRepository = mongoDBRepository;
+        this.redisRepository = redisRepository;
+    }
+
+    @GetMapping("mybatis")
+    public ResponseEntity mybatisTest() {
+        try {
+            log.info("----------------mybatis test start----------------");
+
+            log.info("----------------mybatis insert data----------------");
+            itemMapper.save(new Item());
+
+            log.info("----------------mybatis findAll data----------------");
+            List<Item> contentList = itemMapper.findAll();
+            log.info(contentList.toString());
+
+            log.info("----------------mybatis delete data----------------");
+            itemMapper.deleteByName("test");
+
+            log.info("----------------mybatis findAll data----------------");
+            contentList = itemMapper.findAll();
+            log.info(contentList.toString());
+
+            return new ResponseEntity(HttpStatus.OK);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("jpa")
-    public ResponseEntity jpaTest() {
+    public ResponseEntity jpaTest(@Param("phone") final String phone) {
         try {
-            final Item item = new Item(1, "test");
+            log.info("----------------jpa test start----------------");
+
             log.info("----------------jpa insert data----------------");
-            itemRepository.save(item);
-            log.info("----------------jpa findOne data----------------");
-            Optional<Item> content = itemRepository.findById(1);
-            log.info(content.toString());
+            itemRepository.save(new Item());
+
             log.info("----------------jpa findAll data----------------");
             Iterable<Item> contentList = itemRepository.findAll();
             log.info(contentList.toString());
+
             log.info("----------------jpa delete data----------------");
-            itemRepository.delete(item);
+            itemRepository.deleteByName("test");
+
+            log.info("----------------jpa findAll data----------------");
+            contentList = itemRepository.findAll();
+            log.info(contentList.toString());
+
+            return new ResponseEntity(HttpStatus.OK);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("mongodb")
+    public ResponseEntity mongoDBTest() {
+        try {
+            log.info("----------------mongodb test start----------------");
+
+            log.info("----------------mongodb insert data----------------");
+            mongoDBRepository.save(new Content());
+
+            log.info("----------------mongodb findAll data----------------");
+            Iterable<Content> contentList = mongoDBRepository.findAll();
+            log.info(contentList.toString());
+
+            log.info("----------------mongodb delete data----------------");
+            Content content = new Content();
+            content.setBody("test");
+            //id로 삭제
+            mongoDBRepository.delete(content);
+
+            log.info("----------------mongodb findAll data----------------");
+            contentList = mongoDBRepository.findAll();
+            log.info(contentList.toString());
+
             return new ResponseEntity(HttpStatus.OK);
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -51,17 +128,26 @@ public class TestController {
     @GetMapping("redis")
     public ResponseEntity redisRedis() {
         try {
-            Token token = new Token();
+
+            HttpSession httpSession = ContextUtils.getSession(true);
+            log.info(httpSession.getId());
+
+            log.info("----------------redis test start----------------");
 
             log.info("----------------redis insert data----------------");
-            //redisRepository.save(token);
+            redisRepository.save(new Token());
 
             log.info("----------------redis findAll data----------------");
-            //Iterable<Token> contentList = redisRepository.findAll();
-            //log.info(contentList.toString());
+            Iterable<Token> contentList = redisRepository.findAll();
+            log.info(contentList.toString());
 
             log.info("----------------redis delete data----------------");
-            //redisRepository.delete(token);
+            //redisRepository.deleteByName("test");
+            redisRepository.delete(new Token());
+
+            log.info("----------------redis findAll data----------------");
+            contentList = redisRepository.findAll();
+            log.info(contentList.toString());
 
             return new ResponseEntity(HttpStatus.OK);
         } catch (Exception e) {
@@ -70,3 +156,4 @@ public class TestController {
         }
     }
 }
+

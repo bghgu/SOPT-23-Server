@@ -1,6 +1,6 @@
 package org.sopt.seminar8.repository;
 
-import org.sopt.seminar8.domain.mongo.Content;
+import org.sopt.seminar8.domain.Content;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 /**
