@@ -11,7 +11,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import redis.clients.jedis.JedisPoolConfig;
 
 /**
- * Created by ds on 2018-12-23.
+ * Created by ds on 2018-12-26.
  */
 
 @Configuration

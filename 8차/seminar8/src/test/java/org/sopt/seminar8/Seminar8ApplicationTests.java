@@ -14,3 +14,4 @@ public class Seminar8ApplicationTests {
     }
 
 }
+
