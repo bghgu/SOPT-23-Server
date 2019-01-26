@@ -2,6 +2,8 @@
 
 ![SOPT_23_COLOR_LOGO](https://github.com/bghgu/SOPT-23-Server/blob/master/SOPT_23_COLOR_LOGO.png)
 
+2018.07.28 ~ 2019.01.25
+
 | 차수 | 내용                                 |
 | ---- | ------------------------------------ |
 | 1차  | JAVA 기초, Spring boot 시작하기      |
