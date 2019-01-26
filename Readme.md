@@ -2,16 +2,6 @@
 
 ![SOPT_23_COLOR_LOGO](https://github.com/bghgu/SOPT-23-Server/blob/master/SOPT_23_COLOR_LOGO.png)
 
-2018.07.28 ~ 2019.01.25
+### 2018.07.28 ~ 2019.01.25
 
-| 차수 | 내용                                 |
-| ---- | ------------------------------------ |
-| 1차  | JAVA 기초, Spring boot 시작하기      |
-| 2차  | Spring Presentation Layer, Tomcat    |
-| 3차  | Spring business Logic Layer, AWS EC2 |
-| 4차  | MySQL, Mybatis, AWS RDS              |
-| 5차  | File Upload, AWS S3, JWT             |
-| 6차  | URI, REST API 설계 및 구현           |
-| 7차  | 클라이언트 연동 세미나               |
-| 8차  | Spring Data JPA, Redis, MongoDB      |
-
+![서버 파트 커리큘럼](https://github.com/bghgu/SOPT-23-Server/blob/master/%EC%84%9C%EB%B2%84%20%ED%8C%8C%ED%8A%B8%20%EC%BB%A4%EB%A6%AC%ED%81%98%EB%9F%BC.png)
